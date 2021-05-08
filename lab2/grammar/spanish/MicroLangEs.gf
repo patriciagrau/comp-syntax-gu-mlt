@@ -115,4 +115,11 @@ lin wait_V2 = mkV2 "esperar" ;
 lin walk_V = mkV "andar" ;
 
 
+--- Others ---
+
+-- lin already_Adv = mkAdv "already" ;
+-- lin john_PN = mkPN "John" ;
+-- lin know_VS = mkVS (mkV "know" "knew" "known") ;
+-- lin now_Adv = mkAdv "now" ;
+-- lin paris_PN = mkPN "Paris" ;
 }
