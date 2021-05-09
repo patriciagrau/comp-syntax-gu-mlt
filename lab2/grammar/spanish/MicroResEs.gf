@@ -5,6 +5,7 @@ param
   Number = Sg | Pl ;
   Gender = Masc | Fem ;
   Person = P1 | P2 | P3 ;
+  Case = Nom | Acc ;
 
 oper
 
@@ -12,7 +13,7 @@ oper
 
 Noun: Type = {s: Number => Str ; g : Gender} ;
 
----- a) words ending with vowel --> +s (i.e., bicicleta+s)
+---------- a) words ending with vowel --> +s (i.e., bicicleta+s)
 
 nounV: Str -> Gender -> Noun
   = \x, gen -> {s = table {
@@ -20,7 +21,7 @@ nounV: Str -> Gender -> Noun
         Pl => (x + "s")};
       g = gen} ;
 
----- b) words ending with consonant --> +es (i.e., animal+es)
+---------- b) words ending with consonant --> +es (i.e., animal+es)
 
 nounC: Str -> Gender -> Noun
   = \x, gen -> {s = table {
@@ -28,7 +29,7 @@ nounC: Str -> Gender -> Noun
         Pl => (x + "es")}; 
       g = gen} ;
 
----- c) words ending with ez --> -z + es (i.e., pe(z)+ces) (similar to baby/babies for Aarne)
+---------- c) words ending with ez --> -z + es (i.e., pe(z)+ces) (similar to baby/babies for Aarne)
 
 zed: Str -> Gender -> Noun
   = \x, gen -> {s = table {
@@ -36,9 +37,9 @@ zed: Str -> Gender -> Noun
       Pl => (x + "ces")};
       g = gen} ;
 
----- d) words that change with "sex": amig@ (friend), niñ@ (boy/girl), hij@ (child), gat@ (cat), perr@ (dog) ????
+---------- d) words that change with "sex": amig@ (friend), niñ@ (boy/girl), hij@ (child), gat@ (cat), perr@ (dog) ????
 
----- Mix!
+---------- Mix!
 
 mkN : Str -> Gender -> Noun
   = \x, gen -> case x of
@@ -110,6 +111,33 @@ mkV2 : Str -> Verb
       lex + "ir" => presInd (lex+"o") (lex+"es") (lex+"e") (lex+"imos") (lex+"ís") (lex+"en")  
   } ;
 
---- Elena being smart: contar & encontrar c + "ont" + ar
+--- Elena: contar & encontrar c + "ont" + ar
+
+
+------ 3. Adverbs ------
+
+Adverb : Type = {s : Str} ;
+
+mkAdv : Str -> Adverb
+    = \s -> {s = s} ;
+
+
+------ 4. Pronouns ------
+
+Pronoun : Type = {s : Case => Str; n : Number } -- No Person or Gender because it's not in the abstract
+
+mkPron : Str -> Str -> Number -> Pronoun -- I have a syntax error here :'(
+    = \nom, acc, num -> {s = table {
+        Nom => nom; Acc => acc}; 
+        n = num} ;
+
+
+------ 5. Prepositions ------
+ 
+ Preposition : Type = {s : Str } ;
+ 
+ mkPrep : Str -> Preposition
+    = \s -> {s = s} ;
+
 
 }

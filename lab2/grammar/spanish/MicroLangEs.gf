@@ -8,15 +8,31 @@ concrete MicroLangEs of MicroLang = open MicroResEs in {
 
   lincat
 
-    -- N = MicroResEs.N ;
-    -- A = MicroResEs.A ;
-    -- V = MicroResEs.V ;
-    -- V2 = MicroResEs.V2 ;
-
     V = Verb ;
     V2 = Verb2 ;
     A = Adjective ;
     N = Noun ;
+
+    Adv = Adverb ;
+    Pron = Pronoun ;
+    Prep = Preposition ;
+
+    Utt = {s : Str} ;
+    S  = {s : Str} ;
+
+    CN = Noun ;
+    AP = Adjective ;
+  
+  -- lin
+    
+    -- AdjCN ap cn = {
+      -- s = \\num => cn.s ! num ! gen ++ ap.s ! num ! cn.gen} -- ?????????????
+
+    -- UsePron p = p ;
+    -- UseNoun n = n ;
+    -- PositA a = a ;
+  
+
 
 -----------------------------------------------------
 ---------------- Lexicon part -----------------------
@@ -115,11 +131,28 @@ lin wait_V2 = mkV2 "esperar" ;
 lin walk_V = mkV "andar" ;
 
 
+--- Adverbs ---
+
+lin already_Adv = mkAdv "ya" ;
+lin now_Adv = mkAdv "ahora" ;
+
+
+--- Pronouns ---
+
+he_Pron = mkPron "él" "lo" Sg ;
+she_Pron = mkPron "ella" "la" Sg ;
+they_Pron = mkPron "ellos" "los" Pl ;
+
+--- Prepositions ---
+
+in_Prep = {s = "en"} ;
+on_Prep = {s = "encima de"} ;
+with_Prep = {s = "con"} ;
+
+
 --- Others ---
 
--- lin already_Adv = mkAdv "already" ;
 -- lin john_PN = mkPN "John" ;
 -- lin know_VS = mkVS (mkV "know" "knew" "known") ;
--- lin now_Adv = mkAdv "now" ;
 -- lin paris_PN = mkPN "Paris" ;
 }
