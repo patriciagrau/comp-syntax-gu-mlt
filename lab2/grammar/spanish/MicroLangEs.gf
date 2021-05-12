@@ -16,6 +16,7 @@ concrete MicroLangEs of MicroLang = open MicroResEs in {
     Adv = Adverb ;
     Pron = Pronoun ;
     Prep = Preposition ;
+    Det = Determiner ;
 
     Utt = {s : Str} ;
     S  = {s : Str} ;
@@ -23,14 +24,29 @@ concrete MicroLangEs of MicroLang = open MicroResEs in {
     CN = Noun ;
     AP = Adjective ;
   
-  -- lin
-    
-    -- AdjCN ap cn = {
-      -- s = \\num => cn.s ! num ! gen ++ ap.s ! num ! cn.gen} -- ?????????????
+  lin
+  
+    UseN n = n ;
+    PositA a = a ;
+    -- UsePron p = p ; 
 
-    -- UsePron p = p ;
-    -- UseNoun n = n ;
-    -- PositA a = a ;
+    --- fun AdjCN : AP -> CN -> CN ;
+
+    AdjCN ap cn = {
+      s = \\num, gen => 
+      cn.s ! num ! gen ++ ap.s ! num ! gen} ; -- error: table type expected for table instead of Str
+    
+    --- fun DetCN : Det -> CN -> NP ;
+
+    DetCN det cn = {
+      s = \\num, gen =>
+      det.s ! num ! gen ++ cn.s ! num ! gen} ; -- error: table type expected for table instead of Str
+    
+    --- fun UseV : V -> VP ;
+
+    UseV v = {verb = v; compl = []} ;
+
+
   
 
 
@@ -129,6 +145,7 @@ lin travel_V = mkV "viajar" ;
 lin understand_V2 = mkV2 "entender" ;
 lin wait_V2 = mkV2 "esperar" ;
 lin walk_V = mkV "andar" ;
+-- lin know_VS = mkV2 "saber" ; -- should be VS?
 
 
 --- Adverbs ---
@@ -139,20 +156,27 @@ lin now_Adv = mkAdv "ahora" ;
 
 --- Pronouns ---
 
-he_Pron = mkPron "él" "lo" Sg ;
-she_Pron = mkPron "ella" "la" Sg ;
-they_Pron = mkPron "ellos" "los" Pl ;
+lin he_Pron = mkPron "él" "lo" Masc Sg ;
+lin she_Pron = mkPron "ella" "la" Fem Sg ;
+lin they_Pron = mkPron "ellos" "los" Masc Pl ;
 
 --- Prepositions ---
 
-in_Prep = {s = "en"} ;
-on_Prep = {s = "encima de"} ;
-with_Prep = {s = "con"} ;
+lin in_Prep = {s = "en"} ;
+lin on_Prep = {s = "encima de"} ;
+lin with_Prep = {s = "con"} ;
+
+
+--- Determiners ---
+
+lin a_Det = mkDet "un" "una" Sg ;
+lin aPl_Det = mkDet "unos" "unas" Pl ;
+lin the_Det = mkDet "el" "la" Sg ;
+lin thePl_Det = mkDet "los" "las" Pl ;
 
 
 --- Others ---
 
 -- lin john_PN = mkPN "John" ;
--- lin know_VS = mkVS (mkV "know" "knew" "known") ;
 -- lin paris_PN = mkPN "Paris" ;
 }

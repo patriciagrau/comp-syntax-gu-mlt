@@ -106,6 +106,7 @@ mkV2 : Str -> Verb
   = \x -> case x of {
       "encontrar" => presInd "encuentro" "encuentras" "encuentra" "encontramos" "encontráis" "encuentran";
       "entender" => presInd "entiendo" "entiendes" "entiende" "entendemos" "entendéis" "entienden";
+      "saber" => presInd "sé" "sabes" "sabe" "sabemos" "sabéis" "saben" ;
       lex + "ar" => presInd (lex+"o") (lex+"as") (lex+"a") (lex+"amos") (lex+"áis") (lex+"an") ;
       lex + "er" => presInd (lex+"o") (lex+"es") (lex+"e") (lex+"emos") (lex+"éis") (lex+"en") ;
       lex + "ir" => presInd (lex+"o") (lex+"es") (lex+"e") (lex+"imos") (lex+"ís") (lex+"en")  
@@ -124,12 +125,15 @@ mkAdv : Str -> Adverb
 
 ------ 4. Pronouns ------
 
-Pronoun : Type = {s : Case => Str; n : Number } -- No Person or Gender because it's not in the abstract
+Pronoun : Type = {s : Case => Str; g : Gender; n : Number; p : Person } ;
 
-mkPron : Str -> Str -> Number -> Pronoun -- I have a syntax error here :'(
-    = \nom, acc, num -> {s = table {
+mkPron : Str -> Str -> Gender -> Number -> Pronoun
+    = \nom, acc, gen, num -> {s = table {
         Nom => nom; Acc => acc}; 
-        n = num} ;
+        g = gen ;
+        n = num ;
+        p = P3
+        } ;
 
 
 ------ 5. Prepositions ------
@@ -139,5 +143,15 @@ mkPron : Str -> Str -> Number -> Pronoun -- I have a syntax error here :'(
  mkPrep : Str -> Preposition
     = \s -> {s = s} ;
 
+
+------ 6. Determiners ------
+
+
+Determiner : Type = {s : Gender => Str; n : Number } ;
+
+mkDet : Str -> Str -> Number -> Determiner 
+    = \un, una, num -> {s = table {
+      Masc => un; Fem => una};
+      n = num} ;
 
 }
