@@ -22,32 +22,104 @@ concrete MicroLangEs of MicroLang = open MicroResEs in {
     S  = {s : Str} ;
 
     CN = Noun ;
+    -- NP = Noun ; 
+    -- NP = {s : Str} ;
+    NP = {s : Case => Str; p : Person ; n : Number; g : Gender} ;
     AP = Adjective ;
+
+    VP = { verb : Number => Person => Str ; compl : Str } ;
+    
   
   lin
   
+    UttS s = s ;
+
+    ------ fun UttNP : NP -> Utt ; ------
+    
+    UttNP np = {s = np.s ! Nom} ;
+
+
     UseN n = n ;
     PositA a = a ;
-    -- UsePron p = p ; 
 
-    --- fun AdjCN : AP -> CN -> CN ;
+    ------ UsePron : Pron -> NP ;  ------ 
+
+    -- Pronoun : Type = {s : Case => Str; g : Gender; n : Number; p : Person } ;
+    -- Example of pron : he_Pron = mkPron "él" "lo" Masc Sg ;
+    -- UsePron p -> NP ; -- older version
+
+    UsePron pron = { 
+      s = table {
+        Nom => pron.s ! Nom ;
+        Acc => pron.s ! Acc } ;
+        p = pron.p ;
+        n = pron.n ;
+        g = pron.g
+            } ; 
+
+    ------ fun AdjCN : AP -> CN -> CN ; ------
+    
+    -- Noun: Type = {s: Number => Str ; g : Gender} ;
+    -- Adjective: Type = {s : Number => Gender => Str} ;
 
     AdjCN ap cn = {
-      s = \\num, gen => 
-      cn.s ! num ! gen ++ ap.s ! num ! gen} ; -- error: table type expected for table instead of Str
+    s = table { Sg => cn.s ! Sg ++ ap.s ! Sg ! cn.g ;
+                Pl => cn.s ! Pl ++ ap.s ! Pl ! cn.g } ;
+                g = cn.g; -- this should break but doesn't!
+                p = P3;
+              };
     
-    --- fun DetCN : Det -> CN -> NP ;
+    ------ fun DetCN : Det -> CN -> NP ; ------
 
-    DetCN det cn = {
-      s = \\num, gen =>
-      det.s ! num ! gen ++ cn.s ! num ! gen} ; -- error: table type expected for table instead of Str
+    -- Determiner : Type = {s : Gender => Str; n : Number } ;
+
+    DetCN det cn = {s = \\c => det.s ! cn.g ++ cn.s ! det.n;
+                    p =  P3;
+                    n = det.n;
+                    g = cn.g} ;
     
-    --- fun UseV : V -> VP ;
+    ------ fun PrepNP : Prep -> NP -> Adv ; ------
 
-    UseV v = {verb = v; compl = []} ;
+    -- Preposition : Type = {s : Str } ;
+    -- NP = {s : Case => Str; p : Person ; n : Number; g : Gender} ;
+    -- Adverb : Type = {s : Str} ;
+
+    PrepNP prep np = {s = \\c => prep.s ++ np.s} ;
 
 
-  
+    ------ fun UseV : V -> VP ; ------
+    
+    -- Verb: Type = {s : Number => Person => Str};
+    -- Verb2: Type = {s : Number => Person => Str};
+
+    UseV v = {verb = v.s ; 
+              compl =  []} ;
+
+
+    ------ fun UseComp : Comp -> VP ; ------
+
+
+    ------ fun ComplV2 : V2 -> NP -> VP ; ------
+    
+    -- Verb2: Type = {s : Number => Person => Str};
+    -- NP = {s : Case => Str; p : Person ; n : Number; g : Gender} ;
+
+      ComplV2 v2 np = {
+                      verb = v2.s ;
+                      compl = np.s ! Acc
+                      } ;
+
+
+    ------ fun AdvVP : VP -> Adv -> VP ; ------
+
+
+  --- Falta:
+   --- Warning: no linearization of AdvVP
+   --- Warning: no linearization type for Comp, inserting default {s : Str}
+   --- Warning: no linearization of CompAP
+   --- Warning: no linearization of PredVPS
+   --- Warning: no linearization of PrepNP
+   --- Warning: no linearization of UseComp
 
 
 -----------------------------------------------------
@@ -93,7 +165,7 @@ lin ship_N = mkN "barco" Masc ;
 lin star_N = mkN "estrella" Fem ;
 lin train_N = mkN "tren" Masc ;
 lin tree_N = mkN "árbol" Masc ;
-lin water_N = mkN "agua" Masc ;
+lin water_N = mkN "agua" Fem ;
 lin wine_N = mkN "vino" Masc ;
 lin woman_N = mkN "mujer" Fem ;
 

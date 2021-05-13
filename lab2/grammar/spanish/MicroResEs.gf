@@ -33,7 +33,7 @@ nounC: Str -> Gender -> Noun
 
 zed: Str -> Gender -> Noun
   = \x, gen -> {s = table {
-      Sg => x ; 
+      Sg => (x+"z") ; 
       Pl => (x + "ces")};
       g = gen} ;
 
@@ -45,7 +45,7 @@ mkN : Str -> Gender -> Noun
   = \x, gen -> case x of
   {
     lex + ("a"|"e"|"i"|"o"|"u"|"á"|"é"|"í"|"ó"|"ú") => nounV x gen ;
-    lex + "z" => zed x gen ;
+    lex + "z" => zed lex gen ;
     _ => nounC x gen
   } ;
 
@@ -145,7 +145,6 @@ mkPron : Str -> Str -> Gender -> Number -> Pronoun
 
 
 ------ 6. Determiners ------
-
 
 Determiner : Type = {s : Gender => Str; n : Number } ;
 
