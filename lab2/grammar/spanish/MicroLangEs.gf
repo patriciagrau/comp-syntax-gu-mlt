@@ -109,7 +109,7 @@ concrete MicroLangEs of MicroLang = open MicroResEs in {
 
     UseV v = {verb = v.s ; 
               compl = \\num,gen => []} ;
-              -- compl =  []} ;
+              -- compl =  []} ; -- from before adding number and gender to compl
 
 
     ---------------------------------------
