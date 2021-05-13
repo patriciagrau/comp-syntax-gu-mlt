@@ -112,6 +112,20 @@ mkV2 : Str -> Verb
       lex + "ir" => presInd (lex+"o") (lex+"es") (lex+"e") (lex+"imos") (lex+"ís") (lex+"en")  
   } ;
 
+
+mkBe : Str -> Verb
+  = \x -> case x of {
+      "ser" => presInd "soy" "eres" "es" "somos" "sois" "son";
+      "estar" => presInd "estoy" "estás" "está" "estamos" "estáis" "están";
+      "parecer" => presInd "parezco" "pareces" "parece" "parecemos" "parecéis" "parecen"
+  } ;
+
+--- To_be ---
+
+be_Verb : Verb = mkBe "ser"; 
+-- be_verb2 : Verb = mkBe "estar" ;
+-- be_verb3 : Verb = mkBe "parecer"
+
 --- Elena: contar & encontrar c + "ont" + ar
 
 

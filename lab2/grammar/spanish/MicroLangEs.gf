@@ -27,27 +27,31 @@ concrete MicroLangEs of MicroLang = open MicroResEs in {
     NP = {s : Case => Str; p : Person ; n : Number; g : Gender} ;
     AP = Adjective ;
 
-    VP = { verb : Number => Person => Str ; compl : Str } ;
+    -- VP = { verb : Number => Person => Str ; compl : Str } ; 
+    VP = { verb : Number => Person => Str ; compl : Number => Gender => Str } ; -- Added Number and Gender to compl for copula
+    Comp = Adjective ;
     
   
   lin
   
+    UseN n = n ;
+    PositA a = a ;
+        
     UttS s = s ;
 
+    -------------------------------------
     ------ fun UttNP : NP -> Utt ; ------
+    -------------------------------------
     
     UttNP np = {s = np.s ! Nom} ;
 
 
-    UseN n = n ;
-    PositA a = a ;
-
-    ------ UsePron : Pron -> NP ;  ------ 
+    -----------------------------------------
+    ------ fun UsePron : Pron -> NP ;  ------ 
+    -----------------------------------------
 
     -- Pronoun : Type = {s : Case => Str; g : Gender; n : Number; p : Person } ;
-    -- Example of pron : he_Pron = mkPron "él" "lo" Masc Sg ;
-    -- UsePron p -> NP ; -- older version
-
+    
     UsePron pron = { 
       s = table {
         Nom => pron.s ! Nom ;
@@ -57,7 +61,10 @@ concrete MicroLangEs of MicroLang = open MicroResEs in {
         g = pron.g
             } ; 
 
+
+    ------------------------------------------
     ------ fun AdjCN : AP -> CN -> CN ; ------
+    ------------------------------------------
     
     -- Noun: Type = {s: Number => Str ; g : Gender} ;
     -- Adjective: Type = {s : Number => Gender => Str} ;
@@ -65,11 +72,14 @@ concrete MicroLangEs of MicroLang = open MicroResEs in {
     AdjCN ap cn = {
     s = table { Sg => cn.s ! Sg ++ ap.s ! Sg ! cn.g ;
                 Pl => cn.s ! Pl ++ ap.s ! Pl ! cn.g } ;
-                g = cn.g; -- this should break but doesn't!
+                g = cn.g; -- this should break but doesn't (?)
                 p = P3;
               };
     
+
+    -------------------------------------------
     ------ fun DetCN : Det -> CN -> NP ; ------
+    -------------------------------------------
 
     -- Determiner : Type = {s : Gender => Str; n : Number } ;
 
@@ -78,48 +88,91 @@ concrete MicroLangEs of MicroLang = open MicroResEs in {
                     n = det.n;
                     g = cn.g} ;
     
+
+    ----------------------------------------------
     ------ fun PrepNP : Prep -> NP -> Adv ; ------
+    ----------------------------------------------
 
     -- Preposition : Type = {s : Str } ;
     -- NP = {s : Case => Str; p : Person ; n : Number; g : Gender} ;
     -- Adverb : Type = {s : Str} ;
 
-    PrepNP prep np = {s = \\c => prep.s ++ np.s} ;
+    PrepNP prep np = {s = prep.s ++ np.s ! Nom} ;
 
 
+    ----------------------------------
     ------ fun UseV : V -> VP ; ------
+    ----------------------------------
     
     -- Verb: Type = {s : Number => Person => Str};
     -- Verb2: Type = {s : Number => Person => Str};
 
     UseV v = {verb = v.s ; 
-              compl =  []} ;
+              compl = \\num,gen => []} ;
+              -- compl =  []} ;
 
 
+    ---------------------------------------
+    ------ fun CompAP : AP -> Comp ; ------
+    --------------------------------------- 
+    
+    -- Adjective: Type = {s : Number => Gender => Str} ;
+
+    CompAP ap = ap;
+
+
+    ----------------------------------------
     ------ fun UseComp : Comp -> VP ; ------
+    ----------------------------------------
+
+    -- Adjective: Type = {s : Number => Gender => Str} ;
+    -- VP = { verb : Number => Person => Str ; compl : Str } ;
+
+        UseComp comp = {
+                        verb = be_Verb.s   ;
+                        compl = \\num, gen => comp.s ! num ! gen
+        };
 
 
+    --------------------------------------------
     ------ fun ComplV2 : V2 -> NP -> VP ; ------
+    --------------------------------------------
     
     -- Verb2: Type = {s : Number => Person => Str};
     -- NP = {s : Case => Str; p : Person ; n : Number; g : Gender} ;
 
-      ComplV2 v2 np = {
-                      verb = v2.s ;
-                      compl = np.s ! Acc
-                      } ;
+    ComplV2 v2 np = {
+                    verb = v2.s ;
+                    compl = \\num, gen => np.s ! Acc
+                    -- compl = np.s ! Acc -- from before adding number and gender to compl
+                    } ;
 
 
+    -------------------------------------------
     ------ fun AdvVP : VP -> Adv -> VP ; ------
+    -------------------------------------------
+    
+    -- Adverb : Type = {s : Str} ;
+    -- VP = { verb : Number => Person => Str ; compl : Str } ;
+
+    AdvVP vp adv = { verb = vp.verb ;
+                    compl = \\num,gen => vp.compl ! num ! gen ++ adv.s
+                    -- compl = vp.compl ++ adv.s -- from before adding number and gender to compl
+                    } ;
 
 
-  --- Falta:
-   --- Warning: no linearization of AdvVP
-   --- Warning: no linearization type for Comp, inserting default {s : Str}
-   --- Warning: no linearization of CompAP
-   --- Warning: no linearization of PredVPS
-   --- Warning: no linearization of PrepNP
-   --- Warning: no linearization of UseComp
+    -------------------------------------------
+    ------ fun PredVPS : NP -> VP -> S ; ------
+    -------------------------------------------
+    
+    -- NP = {s : Case => Str; p : Person ; n : Number; g : Gender} ;
+    -- VP = { verb : Number => Person => Str ; compl : Str } ;
+
+    PredVPS np vp = {
+      s = np.s ! Nom ++ vp.verb ! np.n ! np.p ++ vp.compl ! np.n ! np.g
+      -- s = np.s ! Nom ++ vp.verb ! np.n ! np.p ++ vp.compl -- from before adding number and gender to compl
+    };
+
 
 
 -----------------------------------------------------
@@ -217,7 +270,7 @@ lin travel_V = mkV "viajar" ;
 lin understand_V2 = mkV2 "entender" ;
 lin wait_V2 = mkV2 "esperar" ;
 lin walk_V = mkV "andar" ;
--- lin know_VS = mkV2 "saber" ; -- should be VS?
+-- lin know_VS = mkV2 "saber" ; -- should be mkVS?
 
 
 --- Adverbs ---
