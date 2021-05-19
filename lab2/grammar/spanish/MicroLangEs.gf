@@ -169,7 +169,7 @@ concrete MicroLangEs of MicroLang = open MicroResEs in {
     -- VP = { verb : Number => Person => Str ; compl : Str } ;
 
     PredVPS np vp = {
-      s = np.s ! Nom ++ vp.verb ! np.n ! np.p ++ vp.compl ! np.n ! np.g
+      s = np.s ! Nom ++ vp.compl ! np.n ! np.g ++ vp.verb ! np.n ! np.p
       -- s = np.s ! Nom ++ vp.verb ! np.n ! np.p ++ vp.compl -- from before adding number and gender to compl
     };
 
